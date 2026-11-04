@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Логи и системный мусор ###
+*.log
+logs/
+.DS_Store
+Thumbs.db

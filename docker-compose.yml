@@ -1,0 +1,35 @@
+services:
+  # 1. Контейнер базы данных PostgreSQL 17
+  postgres-db:
+    image: postgres:17-alpine
+    container_name: BinanceAvrPrice-db
+    environment:
+      POSTGRES_DB: BinanceAvrPrice_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U postgres -d BinanceAvrPrice_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 2. Контейнер приложения Spring Boot (BinanceAvrPrice)
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: BinanceAvrPrice-app
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: postgres-db
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+volumes:
+  pgdata:
