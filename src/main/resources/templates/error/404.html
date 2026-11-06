@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Страница не найдена</title>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .error-container {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        h1 {
+            font-size: 96px;
+            margin: 0;
+            color: #dc3545;
+            font-weight: 800;
+        }
+        h2 {
+            font-size: 24px;
+            color: #343a40;
+            margin: 10px 0 20px;
+        }
+        p {
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
+        .btn-home {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #0d6efd;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-home:hover {
+            background-color: #0b5ed7;
+        }
+    </style>
+</head>
+<body>
+
+<div class="error-container">
+    <h1>404</h1>
+    <h2>Упс! Страница не найдена</h2>
+    <p>К сожалению, запрашиваемый вами адрес не существует на сервере.
+        При отправке запросов используйте стандартный формат ISO-8601 (строка с буквой Z на конце указывает на таймзону UTC):
+        • Последняя цена: GET http://localhost:8080/api/v1/prices/latest?symbol=BNBUSDT
+        • Средняя цена: GET http://localhost:8080/api/v1/prices/average?from=2026-11-04T12:00:00Z&to=2026-11-04T18:00:00Z
+        • Пагинация списком: GET http://localhost:8080/api/v1/prices?from=2026-11-04T12:00:00Z&to=2026-11-04T18:00:00Z&page=0&size=5
+        • Определение тренда: GET http://localhost:8080/api/v1/prices/trend?from=2026-11-04T12:00:00Z&to=2026-11-04T18:00:00Z</p>
+</div>
+
+</body>
+</html>
