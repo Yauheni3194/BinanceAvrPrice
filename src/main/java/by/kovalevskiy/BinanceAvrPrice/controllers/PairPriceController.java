@@ -3,6 +3,7 @@ import by.kovalevskiy.BinanceAvrPrice.DTO.AveragePriceResponseDto;
 import by.kovalevskiy.BinanceAvrPrice.DTO.PagedResponseDto;
 import by.kovalevskiy.BinanceAvrPrice.DTO.PriceResponseDto;
 import by.kovalevskiy.BinanceAvrPrice.DTO.TrendResponseDto;
+import by.kovalevskiy.BinanceAvrPrice.models.Symbol;
 import by.kovalevskiy.BinanceAvrPrice.services.PairPriceService;
 import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
@@ -17,14 +18,13 @@ public class PairPriceController {
     }
 
     @GetMapping("/latest")
-    public PriceResponseDto getLatestPrice(@RequestParam(required = false) String symbol) {
+    public PriceResponseDto getLatestPrice(@RequestParam(required = false) Symbol symbol) {
         return service.getLatestPrice(symbol);
-        //TODO обработать ошибку
     }
 
     @GetMapping("/average")
     public AveragePriceResponseDto getAveragePrice(
-            @RequestParam(required = false) String symbol,
+            @RequestParam(required = false) Symbol symbol,
             @RequestParam Instant from,
             @RequestParam Instant to) {
         return service.getAveragePrice(symbol, from, to);
@@ -33,7 +33,7 @@ public class PairPriceController {
 
     @GetMapping
     public PagedResponseDto<PriceResponseDto> getPrices(
-            @RequestParam(required = false) String symbol,
+            @RequestParam(required = false) Symbol symbol,
             @RequestParam Instant from,
             @RequestParam Instant to,
             @RequestParam(defaultValue = "0") int page,
@@ -44,7 +44,7 @@ public class PairPriceController {
 
     @GetMapping("/trend")
     public TrendResponseDto getTrend(
-            @RequestParam(required = false) String symbol,
+            @RequestParam(required = false) Symbol symbol,
             @RequestParam Instant from,
             @RequestParam Instant to) {
         return service.calculateTrend(symbol, from, to);

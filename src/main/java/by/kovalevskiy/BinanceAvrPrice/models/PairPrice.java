@@ -20,13 +20,17 @@ public class PairPrice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String symbol;
+
+    @Column(name = "symbol")
+    @Enumerated(EnumType.STRING)
+    private Symbol symbol;
 
     @Column(precision = 18, scale = 8)
     private BigDecimal price;
 
     private Instant fetchedAt;
-    public PairPrice(String symbol, BigDecimal price, Instant fetchedAt) {
+
+    public PairPrice(Symbol symbol, BigDecimal price, Instant fetchedAt) {
         this.symbol = symbol;
         this.price = price;
         this.fetchedAt = fetchedAt;

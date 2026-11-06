@@ -2,6 +2,7 @@ package by.kovalevskiy.BinanceAvrPrice;
 
 import by.kovalevskiy.BinanceAvrPrice.DTO.TrendResponseDto;
 import by.kovalevskiy.BinanceAvrPrice.models.PairPrice;
+import by.kovalevskiy.BinanceAvrPrice.models.Symbol;
 import by.kovalevskiy.BinanceAvrPrice.repositories.PairPriceRepository;
 import by.kovalevskiy.BinanceAvrPrice.services.PairPriceService;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class PairPriceServiceTest {
 
     @Test
     void shouldCalculateUpwardTrend() {
-        String symbol = "BNBUSDT";
+        Symbol symbol = Symbol.BNBUSDT;
         Instant from = Instant.parse("2026-11-05T00:00:00Z");
         Instant to = Instant.parse("2026-11-05T01:00:00Z");
 

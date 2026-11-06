@@ -2,6 +2,7 @@ package by.kovalevskiy.BinanceAvrPrice.scheduler;
 
 import by.kovalevskiy.BinanceAvrPrice.models.BinanceResponse;
 import by.kovalevskiy.BinanceAvrPrice.models.PairPrice;
+import by.kovalevskiy.BinanceAvrPrice.models.Symbol;
 import by.kovalevskiy.BinanceAvrPrice.repositories.PairPriceRepository;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class BinanceScheduler {
                     .body(BinanceResponse.class);
 
             if (response != null && response.price() != null) {
-                PairPrice pairPrice = new PairPrice(symbol, response.price(), Instant.now());
+                PairPrice pairPrice = new PairPrice(Symbol.valueOf(symbol), response.price(), Instant.now());
                 repository.save(pairPrice);
                 log.info("Данные получены и сохранены в базу данных: {}", response.price());
             }

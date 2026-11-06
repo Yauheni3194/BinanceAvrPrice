@@ -5,6 +5,7 @@ import by.kovalevskiy.BinanceAvrPrice.DTO.PagedResponseDto;
 import by.kovalevskiy.BinanceAvrPrice.DTO.PriceResponseDto;
 import by.kovalevskiy.BinanceAvrPrice.DTO.TrendResponseDto;
 import by.kovalevskiy.BinanceAvrPrice.models.PairPrice;
+import by.kovalevskiy.BinanceAvrPrice.models.Symbol;
 import by.kovalevskiy.BinanceAvrPrice.repositories.PairPriceRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,21 +18,19 @@ import java.util.List;
 @Service
 public class PairPriceService {
     private final PairPriceRepository repository;
-    private static final String DEFAULT_SYMBOL = "BNBUSDT";
 
     public PairPriceService(PairPriceRepository repository) {
         this.repository = repository;
     }
 
-    public PriceResponseDto getLatestPrice(String symbol) {
-        String targetSymbol = (symbol != null) ? symbol : DEFAULT_SYMBOL;
-        return repository.findFirstBySymbolOrderByFetchedAtDesc(targetSymbol)
+    public PriceResponseDto getLatestPrice(Symbol symbol) {
+        return repository.findFirstBySymbolOrderByFetchedAtDesc(symbol)
                 .map(p -> new PriceResponseDto(p.getSymbol(), p.getPrice(), p.getFetchedAt()))
-                .orElseThrow(() -> new IllegalArgumentException("Данные для символа " + targetSymbol + " еще не собраны."));
+                .orElseThrow(() -> new IllegalArgumentException("Введите корректное значение(пример:'BNBUSDT')"));
     }
 
-    public AveragePriceResponseDto getAveragePrice(String symbol, Instant from, Instant to) {
-        String targetSymbol = (symbol != null) ? symbol : DEFAULT_SYMBOL;
+    public AveragePriceResponseDto getAveragePrice(Symbol symbol, Instant from, Instant to) {
+        Symbol targetSymbol = (symbol != null) ? symbol : Symbol.BNBUSDT;
         List<PairPrice> prices = repository.findBySymbolAndFetchedAtBetweenOrderByFetchedAtAsc(targetSymbol, from, to);
         if (prices.isEmpty()) {
             return new AveragePriceResponseDto(BigDecimal.ZERO);
@@ -44,8 +43,8 @@ public class PairPriceService {
             return new AveragePriceResponseDto(average);}
     }
 
-    public PagedResponseDto<PriceResponseDto> getPricesWithPagination(String symbol, Instant from, Instant to, int page, int size) {
-        String targetSymbol = (symbol != null) ? symbol : DEFAULT_SYMBOL;
+    public PagedResponseDto<PriceResponseDto> getPricesWithPagination(Symbol symbol, Instant from, Instant to, int page, int size) {
+        Symbol targetSymbol = (symbol != null) ? symbol : Symbol.BNBUSDT;
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("fetchedAt").ascending());
 
         Page<PairPrice> pricePage = repository.findBySymbolAndFetchedAtBetween(targetSymbol, from, to, pageRequest);
@@ -63,8 +62,8 @@ public class PairPriceService {
         );
     }
 
-    public TrendResponseDto calculateTrend(String symbol, Instant from, Instant to) {
-        String targetSymbol = (symbol != null) ? symbol : DEFAULT_SYMBOL;
+    public TrendResponseDto calculateTrend(Symbol symbol, Instant from, Instant to) {
+        Symbol targetSymbol = (symbol != null) ? symbol : Symbol.BNBUSDT;
         List<PairPrice> prices = repository.findBySymbolAndFetchedAtBetweenOrderByFetchedAtAsc(targetSymbol, from, to);
 
         if (prices.size() < 2) {
