@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,16 +17,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         Map<String, String> errorResponse = new HashMap<>();
         errorResponse.put("error", "Bad Request");
-
-        if (ex.getRequiredType() != null && ex.getRequiredType().isEnum()) {
+        Class<?> requiredType = ex.getRequiredType();
+        if (requiredType != null && requiredType.isAssignableFrom(Instant.class)) {
             errorResponse.put("message", String.format(
-                    "Значение '%s' не поддерживается. Допустимые символы: %s",
-                    ex.getValue(),
-                    Arrays.toString(ex.getRequiredType().getEnumConstants())
+                    "Неверный формат даты в параметре '%s'. Значение '%s' не соответствует стандарту ISO-8601. Пример корректного формата: 2026-11-04T12:00:00Z",
+                    ex.getName(), ex.getValue()
             ));
-        } else {
-            errorResponse.put("message", ex.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
+
+        if (requiredType != null && requiredType.isEnum()) {
+            errorResponse.put("message", String.format(
+                    "Значение '%s' не поддерживается для параметра '%s'. Допустимые тикеры: %s",
+                    ex.getValue(), ex.getName(), Arrays.toString(requiredType.getEnumConstants())
+            ));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+
+        errorResponse.put("message", String.format("Параметр '%s' имеет неверный тип данных.", ex.getName()));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
